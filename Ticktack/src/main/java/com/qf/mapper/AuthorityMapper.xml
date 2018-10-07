@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qf.dao.IAuthorityDao">
+  
+  <resultMap id="authoMap" type="Authority">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="aicon" jdbcType="VARCHAR" property="aicon" />
+    <result column="aurl" jdbcType="VARCHAR" property="aurl" />
+    <result column="parentId" jdbcType="INTEGER" property="parentId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  <!-- 根据用户名获取角色信息 -->
+  <select id="findRoleByNo" parameterType="string" resultType="string">
+  		select r.info from t_user u
+		inner join t_userrole ur
+		on u.id=ur.uid
+		inner join t_role r
+		on ur.rid=r.id
+		where no=#{no}
+  </select>
+  <!-- 根据用户名获取角色权限 -->
+  <select id="findTitleByNo" parameterType="string" resultType="string">
+  		select a.title from t_user u
+		inner join t_userrole ur
+		on u.id=ur.uid
+		inner join t_roleauthority ra
+		on ur.rid=ra.rid
+		inner join t_authority a
+		on ra.aid=a.id
+		where no=#{no}
+  </select>
+  <!-- 展示左侧数据 -->
+  <select id="findParentId" resultType="Authority">
+  		select * from t_authority
+  </select>
+  
+  <select id="findByParentId222" parameterType="int" resultType="Authority">
+  		select DISTINCT * from t_authority a1
+		left JOIN t_authority a2
+		on a1.id=a2.parentId
+		where a1.parentId=#{parentId}
+  </select>
+  
+  <select id="count" resultType="int">
+  		select count(1) from t_authority
+  </select>
+  
+  <select id="findAllAuthority" parameterType="map" resultType="Authority">
+  		select * from t_authority limit #{index},#{size}
+  </select>
+  
+  <delete id="deleteById" parameterType="int">
+  		delete from t_authority where id=#{id}
+  </delete>
+  
+  <select id="findById" parameterType="int" resultType="Authority">
+  		select * from t_authority where id=#{id}
+  </select>
+  
+  <insert id="add" parameterType="Authority">
+  		insert into t_authority(title, aicon, aurl, parentId) values (#{title}, #{aicon}, #{aurl}, #{parentId})
+  </insert>
+  
+  <select id="findByPid" parameterType="int" resultType="Authority">
+  		select a.title from t_authority a where parentId=#{parentId}
+  </select>
+  
+  <update id="updateAutho" parameterType="Authority">
+  </update>
+
+</mapper>
